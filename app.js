@@ -170,6 +170,6 @@ app.get("/about", function(req, res) {
 });
 
 // spool up server
-app.listen(3000, function() {
-  console.log("Server started on port 3000");
+app.listen(process.environment.PORT || 3000, function() {
+  console.log("Server started!");
 });
