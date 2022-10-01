@@ -14,8 +14,9 @@ app.use(express.static("public"));
 
 //connect to mongoose db (create if dne)
 mongoose.connect(
-  "mongodb+srv://dnwint2:66UQtkHUHEfJdr.@cluster0.iegpich.mongodb.net/todolistDB"
+  "mongodb+srv://dnwint2:66UQtkHUHEfJdr.@cluster0.iegpich.mongodb.net/todolistDB//?retryWrites=true@w=majority"
 ); //?retryWrites=true&w=majority
+//mongodb+srv://dnwint2:<password>@cluster0.iegpich.mongodb.net/?retryWrites=true&w=majority
 
 // create items collection
 const itemsSchema = new mongoose.Schema({
