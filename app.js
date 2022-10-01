@@ -91,7 +91,9 @@ app.get("/:customListName", function(req, res) {
         items: defaultItems
       });
       const saveNewDefaultList = defaultList.save().then(function() {
-        res.redirect(`/${customListName}`);
+        res
+          .redirect(`/${customListName}`)
+          .catch(console.log("Did not successfully 'findOne'"));
       });
     } else {
       // if a list is found, render it
