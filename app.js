@@ -13,9 +13,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 //connect to mongoose db (create if dne)
-mongoose.connect(
-  "mongodb+srv://dnwint2:66UQtkHUHEfJdr.@cluster0.iegpich.mongodb.net/todolistDB//?retryWrites=true@w=majority"
-); //?retryWrites=true&w=majority
+mongoose
+  .connect(
+    "mongodb+srv://dnwint2:66UQtkHUHEfJdr.@cluster0.iegpich.mongodb.net/todolistDB//?retryWrites=true@w=majority"
+    // "mongodb://localhost:27017/todolistDB"
+  )
+  .then(function() {
+    console.log("Successfully connected to Mongodb Atlas DB.");
+  })
+  .catch(function() {
+    console.log("Failed to connect to Mongodb Atlas DB.");
+  }); //?retryWrites=true&w=majority
 //mongodb+srv://dnwint2:<password>@cluster0.iegpich.mongodb.net/?retryWrites=true&w=majority
 
 // create items collection
@@ -90,11 +98,14 @@ app.get("/:customListName", function(req, res) {
         name: customListName,
         items: defaultItems
       });
-      const saveNewDefaultList = defaultList.save().then(function() {
-        res
-          .redirect(`/${customListName}`)
-          .catch(console.log("Did not successfully 'findOne'"));
-      });
+      const saveNewDefaultList = defaultList
+        .save()
+        .then(function() {
+          res.redirect(`/${customListName}`);
+        })
+        .catch(function() {
+          console.log("Did not successfully 'findOne'");
+        });
     } else {
       // if a list is found, render it
       res.render("list", {
@@ -113,12 +124,17 @@ app.post("/", function(req, res) {
   const item = new Item({ name: itemName });
 
   if (listName === "Today") {
-    item.save().then(() => {
-      console.log(
-        "Item was saved to the default 'Today' list (items collection)"
-      );
-      res.redirect("/");
-    });
+    item
+      .save()
+      .then(() => {
+        console.log(
+          "Item was saved to the default 'Today' list (items collection)"
+        );
+        res.redirect("/");
+      })
+      .catch(() => {
+        console.log("List Name = Today but item save failed somehow");
+      });
   } else {
     List.findOne({ name: listName }, function(err, foundList) {
       if (err) {
@@ -129,10 +145,15 @@ app.post("/", function(req, res) {
       } else {
         console.log(`Found '${foundList}'. Woohoo!`);
         foundList.items.push(item);
-        foundList.save().then(() => {
-          console.log(`Item was saved to the custom ${listName} list.`);
-          res.redirect(`/${listName}`);
-        });
+        foundList
+          .save()
+          .then(() => {
+            console.log(`Item was saved to the custom ${listName} list.`);
+            res.redirect(`/${listName}`);
+          })
+          .catch(() => {
+            console.log("Item was not saved.");
+          });
       }
     });
   }
