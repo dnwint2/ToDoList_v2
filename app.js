@@ -23,8 +23,9 @@ mongoose
   .then(function() {
     console.log("Successfully connected to Mongodb Atlas DB.");
   })
-  .catch(function() {
+  .catch(function(error) {
     console.log("Failed to connect to Mongodb Atlas DB.");
+    console.log(error);
   }); //?retryWrites=true&w=majority
 //mongodb+srv://dnwint2:<password>@cluster0.iegpich.mongodb.net/?retryWrites=true&w=majority
 
